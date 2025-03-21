@@ -29,6 +29,11 @@ public class JsonFlattener {
                 String newKey = prefix.isEmpty() ? fieldName : prefix + "." + fieldName;
                 flattenJsonRecursive(newKey, node.get(fieldName), flatList, mapper);
             }
+        } else if (node.isArray()) {
+            for (int i = 0; i < node.size(); i++) {
+                String newKey = prefix + "[" + i + "]";
+                flattenJsonRecursive(newKey, node.get(i), flatList, mapper);
+            }
         } else if (node.isValueNode()) {
             ObjectNode objNode = mapper.createObjectNode();
             objNode.put("key", prefix);
@@ -38,7 +43,7 @@ public class JsonFlattener {
     }
 
     public static void main(String[] args) {
-        String jsonInput = "{\"level1\":{\"level2\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"key3\":\"value3\"}}";
+        String jsonInput = "{\"id\":\"ee6b8018-66d2-46d0-9803-cbce2ecc39e7\",\"object\":\"chat.completion\",\"created\":1741290146,\"model\":\"deepseek-chat\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Python es un lenguaje de programación...\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":14,\"completion_tokens\":386,\"total_tokens\":400,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":14},\"system_fingerprint\":\"fp_3a5770e1b4_prod0225\"}";
         String resultJson = flattenJson(jsonInput);
         System.out.println(resultJson);
     }
